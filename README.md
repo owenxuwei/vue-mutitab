@@ -10,6 +10,11 @@
 * tab页面的跳转调用以及刷新
 * tab页面实现逻辑与业务系统逻辑分离，甚至取消tab，系统可以正常使用。
 
+### 接口帮助手册
+* 打开tab页面：直接使用this.$router.push();若页面已存在，则激活已存在的tab。
+* 手动删除某路由的缓存： this.$store.commit("tab/DelCache", "xxxxx");"xxxxx"为该页面路由的name
+* 强制刷新当前页面： this.$store.dispatch("tab/reflush")
+
 ## 如何快速在已有项目中引入？引入步骤：
 * 1.tab实现的代码为 TabCtrl.js、TabView.vue 两个文件。
 * 2.全局store注入子模块 tab 例如：
@@ -74,9 +79,4 @@
  };
 ```
 * 5.您可能还需要修改tab标签的样式。最后编译成功。恭喜你，你自己的项目已经可以实现多tab页导航的功能。
-
-### 接口帮助手册
-* 打开tab页面：直接使用this.$router.push();若页面已存在，则激活已存在的tab。
-* 手动删除某路由的缓存： this.$store.commit("tab/DelCache", "xxxxx");"xxxxx"为该页面路由的name
-* 强制刷新当前页面： this.$store.dispatch("tab/reflush")
 
