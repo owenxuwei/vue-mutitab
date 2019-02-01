@@ -1,5 +1,6 @@
 # 基于vue多tab页实现
 本模板提供了最精简实现的代码，简单易懂，以及灵活控制tab的接口。
+![example](https://raw.githubusercontent.com/owenxuwei/vue-mutitab/master/example.png)
 
 ## 多tab页实现常见问题
 * tab页面数据的缓存统一管理
