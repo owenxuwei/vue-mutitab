@@ -1,6 +1,14 @@
 
-import router from '../router'
+import router from '../router' //app路由配置文件
 import Vue from 'vue'
+
+var maxtab = 6;//tab打开最大数量配置
+var defaulttab = {//默认打开页面
+    title: '首页',
+    routername: 'home.index',//路由名称
+    routerparams: null,//路由参数
+    closable: false
+};
 
 Vue.mixin({
   activated() {
@@ -38,19 +46,14 @@ const removecomponent = (component) => {
     component.$destroy();
 }
 
-var maxtab = 2;//tab打开最大数量配置
+
 
 export default {
     namespaced: true,
     state: {
         isRouterAlive:true,
         CurTabIndex: 1,
-        Tabs: [{
-            title: '首页',
-            routername: 'home.index',//路由名称
-            routerparams: null,//路由参数
-            closable: false
-        }]
+        Tabs: [defaulttab]
     },
     mutations: {
         ActiveTab(state, index) {
