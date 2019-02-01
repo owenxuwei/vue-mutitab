@@ -78,6 +78,13 @@
     closable: false
  };
 ```
-* 5.替换<router-view/> 为 <tab-view/>。
+* 5.替换<router-view/> 
+```html
+ <router-view/>
+```
+为 
+```html
+ <tab-view/>
+```
 * 6.您可能还需要修改tab标签的样式。最后编译成功。恭喜你，你自己的项目已经可以实现多tab页导航的功能。
 
