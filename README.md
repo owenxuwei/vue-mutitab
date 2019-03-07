@@ -1,7 +1,10 @@
 # 基于vue多tab页实现
 本模板提供了最精简实现的代码，简单易懂，以及灵活控制tab的接口。
+
 [演示demo](http://owenowen.iask.in/index.html "演示demo")  账号superadmin 密码666666
+
 demo中增加了类似浏览器标签功能、拖拽、右键等。
+
 ![example](https://raw.githubusercontent.com/owenxuwei/vue-mutitab/master/example.png)
 
 ## 多tab页实现常见问题
