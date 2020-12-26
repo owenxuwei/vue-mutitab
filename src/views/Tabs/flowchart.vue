@@ -15,7 +15,13 @@
       <div class="horizontal bottom" @mousedown="handleNodeMouseDown($event,node,2,'bottom')"></div>
       <div class="vertical left" @mousedown="handleNodeMouseDown($event,node,2,'left')"></div>
       <div class="vertical right" @mousedown="handleNodeMouseDown($event,node,2,'right')"></div>
-      <div class="content"> {{node.text}}</div>
+      
+      <div class="content"> 
+          <div class="header">{{node.type}}</div>
+          <div class="body">
+            <textarea @mousedown="$event.stopPropagation();" class="edit" v-model="node.text" />
+          </div>
+      </div>
     </div>
     <svg
       class="svg"
@@ -41,27 +47,27 @@
           {
             id: 1,
             text: "node1",
-            type: 0,
-            width: 50,
-            height: 50,
+            type: "read",
+            width: 120,
+            height: 55,
             x: 50,
-            y: 30,
+            y: 50,
           },
           {
             id: 2,
             text: "node2",
-            type: 0,
-            width: 200,
-            height: 100,
+            type: "read",
+            width: 120,
+            height: 55,
             x: 500,
             y: 50,
           },
           {
             id: 3,
             text: "node3",
-            type: 0,
-            width: 200,
-            height: 20,
+            type: "write",
+            width: 120,
+            height: 55,
             x: 500,
             y: 200,
           },
@@ -181,12 +187,12 @@
                       break;
                   case "top":
                       this.selection.height = this.selectionInfo.clientY - e.clientY + this.selectionInfo.height;
-                      if(this.selection.height<20) this.selection.height=20;
+                      if(this.selection.height<55) this.selection.height=55;
                       else this.selection.y = e.clientY - this.selectionInfo.clientY + this.selectionInfo.y;
                       break;
                   case "bottom":
                       this.selection.height =  e.clientY - this.selectionInfo.clientY + this.selectionInfo.height;
-                      if(this.selection.height<20) this.selection.height=20;
+                      if(this.selection.height<55) this.selection.height=55;
                       break;
               }
       },
@@ -219,6 +225,7 @@
 
     z-index: 1;
     word-break: break-all;
+    
     .content {
       border: 1px #c1bbbb;
       border-style: solid;
@@ -230,6 +237,28 @@
       right:1px;
       bottom: 1px;
       cursor: all-scroll;
+      .header{
+        width: 100%;
+        height: 19px;
+        border-bottom: 1px #b3b0b0 solid;
+      }
+      .body{
+          position: absolute;
+          top:20px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+      }
+      .edit{
+          height: 100%;
+          width: 100%;
+          padding: 0;
+          border: none;
+          border-radius: 4px;
+          resize : none;
+          outline:none;
+          overflow: hidden;
+      }
     }
     .horizontal{
         position: absolute;
