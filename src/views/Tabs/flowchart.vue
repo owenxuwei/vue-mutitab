@@ -16,8 +16,11 @@
       <div class="horizontal bottom" @mousedown="handleNodeMouseDown($event,node,2,'bottom')"></div>
       <div class="vertical left" @mousedown="handleNodeMouseDown($event,node,2,'left')"></div>
       <div class="vertical right" @mousedown="handleNodeMouseDown($event,node,2,'right')"></div>
-      
-      <div class="content"> 
+      <div class="content" @mouseover="node.arrow=true;" @mouseout="node.arrow=false;"> 
+          <div v-show="node.arrow" class="el-icon left"><i class="el-icon-caret-left"></i></div>
+          <div v-show="node.arrow" class="el-icon right"><i class="el-icon-caret-right"></i></div>
+          <div v-show="node.arrow" class="el-icon top"><i class="el-icon-caret-top"></i></div>
+          <div v-show="node.arrow" class="el-icon bottom"><i class="el-icon-caret-bottom"></i></div>
           <div class="header">{{node.type}}</div>
           <div class="body">
             <textarea @mousedown="$event.stopPropagation();" class="edit" v-model="node.text" />
@@ -25,7 +28,7 @@
       </div>
     </div>
     <!-- 线的描述文字 -->
-    <div v-for="l in lines" :key="l.id" class="linetxt"  :style="{left:l.x+'px',top:l.y+'px'}">{{l.type}}</div>
+    <div v-for="l in lines" :key="l.id" class="linetxt"  :style="{left:l.x+'px',top:l.y+'px'}"><i class="el-icon-edit"></i></div>
     <svg
       class="svg"
       ref="svg"
@@ -56,6 +59,7 @@
             height: 55,
             x: 50,
             y: 50,
+            arrow:false,
           },
           {
             id: 2,
@@ -65,6 +69,7 @@
             height: 55,
             x: 500,
             y: 50,
+            arrow:false,
           },
           {
             id: 3,
@@ -74,10 +79,11 @@
             height: 55,
             x: 500,
             y: 200,
+            arrow:false,
           },
         ],
         lines: [
-          { id:"l1",from: 2, to: 1, fd: "bottom", td: "top" ,type:"同意",x:0,y:0},
+          { id:"l1",from: 2, to: 1, fd: "left", td: "right" ,type:"同意",x:0,y:0},
           { id:"l2",from: 1, to: 3, fd: "bottom", td: "bottom" ,type:"自动",x:0,y:0},
         ],
       };
@@ -146,19 +152,19 @@
             l.x =line.sourceX;
             l.y =line.sourceY;
         }
-        if(approximatelyEquals(line.sourceY,line.destinationY)) l.y -=7;
-        else l.x-=7;
+        if(approximatelyEquals(line.sourceY,line.destinationY)) l.y -=5;
+        else l.x-=5;
       },
       getpoint(node, d) {
         switch (d) {
           case "top":
-            return { x: node.x + node.width / 2, y: node.y - 2 };
+            return { x: node.x - 2 + node.width / 2, y: node.y - 2 };
           case "bottom":
-            return { x: node.x + node.width / 2, y: node.y + node.height -2 };
+            return { x: node.x - 2 + node.width / 2, y: node.y + node.height -2 };
           case "left":
-            return { x: node.x, y: node.y + node.height / 2 };
+            return { x: node.x, y: node.y - 2 + node.height / 2 };
           case "right":
-            return { x: node.x + node.width, y: node.y + node.height / 2 };
+            return { x: node.x + node.width, y: node.y - 2 + node.height / 2 };
         }
       },
       handleNodeMouseDown(e, node,type,d) {
@@ -256,11 +262,49 @@
   }
   .node {
     position: absolute;
-
     z-index: 1;
     word-break: break-all;
     
     .content {
+      .el-icon{
+        position: absolute;
+        font-size: 16px;
+        height: 0;
+        z-index: 2;
+        color: rgba(117,117,117,0.5);
+        i{
+            position: absolute;
+            cursor: pointer;
+        }
+        &.left{
+          top:50%;
+          >i{
+             left: -8px;
+             top:-8px;
+          }
+        } 
+        &.right{
+          top:50%;
+          >i{
+            right: -8px;
+             top:-8px;
+          }
+        } 
+        &.top{
+          left:50%;
+          >i{
+             top: -8px;
+             left:-8px;
+          }
+        } 
+        &.bottom{
+          left:50%;
+          >i{
+             top: -8px;
+             left:-8px;
+          }
+        } 
+      }
       border: 1px #c1bbbb;
       border-style: solid;
       background-color: white;
@@ -326,7 +370,9 @@
       border: none;
       outline:none;
       background-color: unset;
-      cursor: pointer;
-    //   min-width: 50px;
+      cursor: alias;
+      color: rgba(117,117,117,0.5);
+      min-width: 14px;
+      min-height: 14px;
   }
 </style>
