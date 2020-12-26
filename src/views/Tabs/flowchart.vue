@@ -9,8 +9,14 @@
       class="node"
       :style="{width:node.width+'px',height:node.height+'px'
       ,left:node.x+'px',top:node.y+'px'}"
-      @mousedown="handleNodeMouseDown($event,node)"
-    > {{node.text}}</div>
+      @mousedown="handleNodeMouseDown($event,node,1)"
+    >
+      <div class="horizontal top" @mousedown="handleNodeMouseDown($event,node,2,'top')"></div>
+      <div class="horizontal bottom" @mousedown="handleNodeMouseDown($event,node,2,'bottom')"></div>
+      <div class="vertical left" @mousedown="handleNodeMouseDown($event,node,2,'left')"></div>
+      <div class="vertical right" @mousedown="handleNodeMouseDown($event,node,2,'right')"></div>
+      <div class="content"> {{node.text}}</div>
+    </div>
     <svg
       class="svg"
       ref="svg"
@@ -61,8 +67,8 @@
           },
         ],
         lines: [
-          { from: 1 ,to: 2, fd: "bottom", td: "left" },
-          { from: 1, to: 3, fd: "right", td: "bottom" },
+          { from: 2, to: 1, fd: "top", td: "top" },
+          { from: 1, to: 3, fd: "bottom", td: "bottom" },
         ],
       };
     },
@@ -113,16 +119,16 @@
       getpoint(node, d) {
         switch (d) {
           case "top":
-            return { x: node.x + node.width / 2, y: node.y - 2};
+            return { x: node.x + node.width / 2, y: node.y - 2 };
           case "bottom":
-            return { x: node.x + node.width / 2, y: node.y + node.height };
+            return { x: node.x + node.width / 2, y: node.y + node.height -2 };
           case "left":
-            return { x: node.x - 2, y: node.y + node.height / 2 };
+            return { x: node.x, y: node.y + node.height / 2 };
           case "right":
-            return { x: node.x + node.width , y: node.y + node.height / 2 };
+            return { x: node.x + node.width, y: node.y + node.height / 2 };
         }
       },
-      handleNodeMouseDown(e, node) {
+      handleNodeMouseDown(e, node,type,d) {
         e.stopPropagation();
         e.preventDefault();
         if (e.ctrlKey) return;
@@ -131,24 +137,58 @@
           clientY: e.clientY,
           x: node.x,
           y: node.y,
+          width:node.width,
+          height:node.height
         };
         this.selection = node;
-        this.optiontype = 1; //1 移动节点
+        this.optiontype = type; //1 移动节点 2 调整node大小
+        this.moved = d; 
       },
-      handleNodeMouseMove(e) {
-        switch (this.optiontype) {
-          case 1:
-            this.selection.x =
-              e.clientX - this.selectionInfo.clientX + this.selectionInfo.x;
-            this.selection.y =
-              e.clientY - this.selectionInfo.clientY + this.selectionInfo.y;
-            for (var i = 0; i < this.lines.length; i++) {
+      drawCurLine(){
+          for (var i = 0; i < this.lines.length; i++) {
               var l = this.lines[i];
               if (l.from == this.selection.id || l.to == this.selection.id)
                 this.drawLine(l);
             }
+      },
+      handleNodeMouseMove(e) {
+        switch (this.optiontype) {
+          case 1: //1 移动节点
+            this.selection.x =
+              e.clientX - this.selectionInfo.clientX + this.selectionInfo.x;
+            this.selection.y =
+              e.clientY - this.selectionInfo.clientY + this.selectionInfo.y;
+            this.drawCurLine();
+            break;
+          case 2:
+              this.changeNodeSize(e);
+              this.drawCurLine();
+              break;
+          default:
             break;
         }
+      },
+      changeNodeSize(e){
+          switch(this.moved){
+                  case "right":
+                      this.selection.width = e.clientX - this.selectionInfo.clientX + this.selectionInfo.width;
+                      if(this.selection.width<20) this.selection.width=20;
+                      break;
+                  case "left":
+                      this.selection.width = this.selectionInfo.clientX - e.clientX + this.selectionInfo.width;
+                      if(this.selection.width<20) this.selection.width=20;
+                      else this.selection.x = e.clientX - this.selectionInfo.clientX + this.selectionInfo.x;
+                      break;
+                  case "top":
+                      this.selection.height = this.selectionInfo.clientY - e.clientY + this.selectionInfo.height;
+                      if(this.selection.height<20) this.selection.height=20;
+                      else this.selection.y = e.clientY - this.selectionInfo.clientY + this.selectionInfo.y;
+                      break;
+                  case "bottom":
+                      this.selection.height =  e.clientY - this.selectionInfo.clientY + this.selectionInfo.height;
+                      if(this.selection.height<20) this.selection.height=20;
+                      break;
+              }
       },
       handleNodeMouseUp() {
         this.optiontype = 0; //0 不操作
@@ -157,7 +197,7 @@
   };
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
   .flowchart {
     width: 100%;
     height: 100%;
@@ -176,11 +216,46 @@
   }
   .node {
     position: absolute;
-    border: 1px #c1bbbb;
-    border-style: solid;
-    background-color: white;
-    border-radius: 4px;
+
     z-index: 1;
-    word-break:break-all;
+    word-break: break-all;
+    .content {
+      border: 1px #c1bbbb;
+      border-style: solid;
+      background-color: white;
+      border-radius: 4px;
+      position: absolute;
+      top:1px;
+      left:1px;
+      right:1px;
+      bottom: 1px;
+      cursor: all-scroll;
+    }
+    .horizontal{
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        z-index: 2;
+        cursor: row-resize;
+    }
+    .vertical{
+        position: absolute;
+        height: 100%;
+        width: 3px;
+        cursor: col-resize;
+        z-index: 2;
+    }
+    .top{
+        top:0;
+    }
+    .bottom{
+        bottom: 0;
+    }
+    .left{
+        left:0;
+    }
+    .right{
+        right:0;
+    }
   }
 </style>
