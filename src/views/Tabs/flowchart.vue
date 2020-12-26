@@ -3,9 +3,10 @@
     class="flowchart"
     ref="flowchart"
   >
+    <!-- 节点 -->
     <div
-      v-for="(node,index) in nodes"
-      :key="index"
+      v-for="node in nodes"
+      :key="node.id"
       class="node"
       :style="{width:node.width+'px',height:node.height+'px'
       ,left:node.x+'px',top:node.y+'px'}"
@@ -23,6 +24,8 @@
           </div>
       </div>
     </div>
+    <!-- 线的描述文字 -->
+    <div v-for="l in lines" :key="l.id" class="linetxt"  :style="{left:l.x+'px',top:l.y+'px'}">{{l.type}}</div>
     <svg
       class="svg"
       ref="svg"
@@ -38,6 +41,7 @@
 
 <script>
   import { line2, lineTo } from "../utils/svg";
+  import { linelength ,approximatelyEquals} from "../utils/math";
   import * as d3 from "d3";
   export default {
     name: "flowchart",
@@ -73,8 +77,8 @@
           },
         ],
         lines: [
-          { from: 2, to: 1, fd: "bottom", td: "top" },
-          { from: 1, to: 3, fd: "bottom", td: "bottom" },
+          { id:"l1",from: 2, to: 1, fd: "bottom", td: "top" ,type:"同意",x:0,y:0},
+          { id:"l2",from: 1, to: 3, fd: "bottom", td: "bottom" ,type:"自动",x:0,y:0},
         ],
       };
     },
@@ -117,7 +121,33 @@
           "#a3a3a3",
           true
         );
-        console.log(l.data);
+        // console.log(l.data.lines);
+        var legths=[];
+        var total=0;
+        for (var i = 0; i < l.data.lines.length; i++) {
+            var line = l.data.lines[i];
+            var lth = linelength(line.destinationX,line.destinationY,line.sourceX,line.sourceY);
+            total+=lth;
+            legths.push(lth);
+        }
+        total=total/2;
+        for(var j=0;j<legths.length;j++){
+            if(total>legths[j]) total-=legths[j];
+            else break;
+        }
+        var line = l.data.lines[j];
+        var lth =  legths[j];
+        if(lth!=0){
+            var k=total/lth;
+            l.x = (line.destinationX-line.sourceX)*k+line.sourceX;
+            l.y = (line.destinationY-line.sourceY)*k+line.sourceY;
+        }
+        else{
+            l.x =line.sourceX;
+            l.y =line.sourceY;
+        }
+        if(approximatelyEquals(line.sourceY,line.destinationY)) l.y -=7;
+        else l.x-=7;
       },
       getpoint(node, d) {
         switch (d) {
@@ -290,5 +320,13 @@
     .right{
         right:0;
     }
+  }
+  .linetxt{
+      position:absolute;
+      border: none;
+      outline:none;
+      background-color: unset;
+      cursor: pointer;
+    //   min-width: 50px;
   }
 </style>
