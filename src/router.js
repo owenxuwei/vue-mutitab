@@ -30,6 +30,12 @@ export default new Router({
           component: () => import(/* webpackChunkName: "about" */ './views/Tabs/Test.vue')
         },
         {
+          path: '/home/flowchart',
+          name: 'home.flowchart',
+          meta :{title:"flowchart"},//此处为规则配置页面 title为Tab显示的标题
+          component: () => import(/* webpackChunkName: "about" */ './views/Tabs/flowchart.vue')
+        },
+        {
           path: '/home/hasparam/:name',
           name: 'home.hasparam',
           meta :{title:"带参数"},//此处为规则配置页面 title为Tab显示的标题

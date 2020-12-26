@@ -5,7 +5,7 @@ var menus = [
         title:"权限管理",
         children:[
             {title:"首页",routername:'home.index'},
-            {title:"模块配置"},
+            {title:"模块配置",routername:'home.flowchart'},
             {title:"测试tab",routername:'home.test'}
         ]
     },
