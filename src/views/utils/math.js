@@ -4,6 +4,12 @@ function distanceOfPointToLine(beginX, beginY, endX, endY, ptX, ptY) {
   return Math.abs(k * ptX - ptY + b) / Math.sqrt(k * k + 1);
 }
 
+function linelength(beginX, beginY, endX, endY) {
+  const dy = endY - beginY ;
+  const dx = endX - beginX ;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
 function between(num1, num2, num) {
   return (num > num1 && num < num2) || (num > num2 && num < num1);
 }
@@ -38,6 +44,7 @@ function roundTo20(number) {
 
 export {
   distanceOfPointToLine,
+  linelength,
   between,
   approximatelyEquals,
   getEdgeOfPoints,

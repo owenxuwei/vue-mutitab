@@ -73,14 +73,12 @@
           },
         ],
         lines: [
-          { from: 2, to: 1, fd: "top", td: "top" },
+          { from: 2, to: 1, fd: "bottom", td: "top" },
           { from: 1, to: 3, fd: "bottom", td: "bottom" },
         ],
       };
     },
     mounted() {
-      //   this.$$nextTick(() => {});
-      //   document.body.addEventListener()
       (window.onmousemove = (e) => {
         this.handleNodeMouseMove(e);
       }),
@@ -119,8 +117,7 @@
           "#a3a3a3",
           true
         );
-        console.log(l.g);
-        console.log(l.g.size());
+        console.log(l.data);
       },
       getpoint(node, d) {
         switch (d) {
@@ -202,7 +199,13 @@
     },
   };
 </script>
-
+<style lang='scss'>
+.svg {
+    g{
+        cursor: pointer;
+    }
+}
+</style>
 <style lang='scss' scoped>
   .flowchart {
     width: 100%;
@@ -219,6 +222,7 @@
       left -1px top -1px, left -1px top -1px;
     height: 100%;
     width: 100%;
+    
   }
   .node {
     position: absolute;
